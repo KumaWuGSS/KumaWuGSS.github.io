@@ -1,6 +1,41 @@
 <!DOCTYPE html>
 <html>
+<head>
+	<meta charset="utf-8">
+	<title>Webchat 展示</title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+	<script>
+		const isDemoSite = false;
+		// 為迴避 CDN 快取，採用動態載入的方式
+		function loadScript(url, callback) {
+			var scriptTag = document.createElement('script');
+			scriptTag.src = url + '?_=' + new Date().getTime();
+			scriptTag.onload = function () {
+				if (callback) {
+					callback();
+				}
+			};
+			document.head.appendChild(scriptTag);
+		}
+		loadScript('https://cai-vghtpe.gss.com.tw/webchat/caiwebchat-config.js', function () {
+			loadScript('https://cai-vghtpe.gss.com.tw/webchat/caiwebchat-loader.js');
+			loadScript('https://cai-vghtpe.gss.com.tw/webchat/bots/vghtp_bot2207_patient/custom.js');
+		});
+
+		// 頁面剛載入時 `CaiWebChat.init` 仍會是 `undefined`，
+		// 故此處採用宣告指定 handler 的方式，於載入完畢後自動呼叫
+		window.onCaiWebChatLoaded = function () {
+			CaiWebChat.init({ botId: 'vghtp_bot2207_patient' });
+			loadScript('https://cai-vghtpe.gss.com.tw/webchat/bots/vghtp_bot2207_patient/customWebChatLoaded.js');
+		};
+
+		// WebChat 連線完要做的事情
+		window.onConnectFulfill = function () {
+			loadScript('https://cai-vghtpe.gss.com.tw/webchat/bots/vghtp_bot2207_patient/customConnectFulfill.js');
+		}
+	</script>
+</head>
 <body>
-<img id="webchatDemoBackgroud" style="width:100vw; height:100vh" src="https://cai-vghtpe.gss.com.tw/fileServer/api/file/blob/8ef7cae2-810a-4a65-93d8-609ed7919461.png">
+	<img class="backgroud" src="https://cai-vghtpe.gss.com.tw/fileServer/api/file/blob/8ef7cae2-810a-4a65-93d8-609ed7919461.png">
 </body>
 </html>
